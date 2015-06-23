@@ -1,7 +1,6 @@
 //
 // Created by RV Administrator on 16.06.2015.
 //
-
 #include "Board.h"
 #include <algorithm>
 
@@ -44,6 +43,11 @@ void Board::move(Square squareBig, Square squareSmall) {
             bigBoard.setSquare(squareBig, COLOR_BOTH);
             move |= 1 << 16;
             winner = bigBoard.whoWon();
+            if (winner == COLOR_NONE) {
+                if (bigBoard.isFull()) {
+                    winner = COLOR_BOTH;
+                }
+            }
         }
     }
 
@@ -117,6 +121,7 @@ double Board::getScore() {
     return sum;
 }
 
+
 void Board::getMoves(Movelist* movelist) {
     movelist->count = 0;
     // wenn das brett gewonnen ist kann nicht weiter gezogen werden.
@@ -137,16 +142,16 @@ void Board::getMoves(Movelist* movelist) {
             }
         }
     } else {
-        // addet alle squares vom miniboard, ausser den gesperrten
-        for(x = 0; x < 9; x++) {
-            if(! smallBoards[next].isSet(x, COLOR_BOTH)) {
-                if(x == prev) {
-                    continue;
-                }
-                movelist->moves[movelist->count].move = next<<4 | x;
-                movelist->count++;
-            }
-
+        //                                        0b110101001            & 0b001000000               ^ 0b111111111
+        //                                        0b111101001 ^ 0b111111111
+        //                                        0b000010110
+        MiniBitboard targets = (smallBoards[next].boardstate[COLOR_BOTH] | singleSquaresMasks[prev]) ^ full;
+        int feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
+        while (targets != 0) {
+            targets ^= singleSquaresMasks[feld];
+            movelist->moves[movelist->count].move = next << 4 | feld;
+            movelist->count++;
+            feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
         }
         if(movelist->count == 0) {
             // wenn der gesperrte square der einzige ist, der uebrig ist, muss dieser gespielt werden
@@ -154,23 +159,22 @@ void Board::getMoves(Movelist* movelist) {
                 movelist->moves[movelist->count].move = next<<4 | prev;
                 movelist->count++;
             }
-            // andernfalls werden alle freien squares hinzugefuegt
+                // andernfalls werden alle freien squares hinzugefuegt
             else {
+                MiniBitboard targets;
                 for(x = 0; x < 9; x++) {
-                    for(y = 0; y < 9; y++) {
-                        if (!smallBoards[x].isSet(y, COLOR_BOTH)) {
-                            movelist->moves[movelist->count].move = x << 4 | y;
-                            movelist->count++;
-                        }
+                    targets = (smallBoards[x].boardstate[COLOR_BOTH] | singleSquaresMasks[prev]) ^ full;
+                    int feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
+                    while (targets != 0) {
+                        targets ^= singleSquaresMasks[feld];
+                        movelist->moves[movelist->count].move = x << 4 | feld;
+                        movelist->count++;
+                        feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
                     }
                 }
             }
         }
     }
-    /*for (int i = 0; i < movelist->count; i++) {
-        printf("%s ", std::to_string(movelist->moves[i].move).c_str());
-    }
-    printf("\n");*/
 }
 
 bool Board::isInMoves(int x, int y, Movelist* moves) {
@@ -196,11 +200,27 @@ bool Board::moveExists(HistoryMove m) {
 }
 
 std::string Board::printBoard(){
-    std::string result = " To move: ";
-    if (toMove == COLOR_X)
-        result += "X";
-    else
-        result += "O";
+    std::string result = "";
+    if (winner == COLOR_NONE) {
+        result +=  "To move: ";
+        if (toMove == COLOR_X)
+            result += "X";
+        else
+            result += "O";
+    } else {
+        result += "Winner: ";
+        switch (winner) {
+            case COLOR_X:
+                result += "X";
+                break;
+            case COLOR_O:
+                result += "O";
+                break;
+            case COLOR_BOTH:
+                result += "BOTH";
+                break;
+        }
+    }
     result += "\n";
     result += " Plys: " + std::to_string(movecount) + "\n";
     result += " PosKey: " + std::to_string(key) + "\n";
@@ -238,12 +258,28 @@ std::string Board::printBoard(){
     return result;
 }
 
-std::string Board::printBoard(Color color){
-    std::string result = " To move: ";
-    if (toMove == COLOR_X)
-        result += "X";
-    else
-        result += "O";
+std::string Board::printBoard(Color color) {
+    std::string result = "";
+    if (winner == COLOR_NONE) {
+        result +=  "To move: ";
+        if (toMove == COLOR_X)
+            result += "X";
+        else
+            result += "O";
+    } else {
+        result += "Winner: ";
+        switch (winner) {
+            case COLOR_X:
+                result += "X";
+                break;
+            case COLOR_O:
+                result += "O";
+                break;
+            case COLOR_BOTH:
+                result += "BOTH";
+                break;
+        }
+    }
     result += "\n";
     result += " Plys: " + std::to_string(movecount) + "\n";
     result += " PosKey: " + std::to_string(key) + "\n";

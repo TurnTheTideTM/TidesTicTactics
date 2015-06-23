@@ -186,8 +186,12 @@ void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
             break;
         }
     }
-    printf("move %s\n", PRMOVE(bestMove).c_str());
-    if(makemove) {
-        board->move(bestMove);
+    if (bestMove == NOMOVE) {
+        printf("Found no valid moves.");
+    } else {
+        printf("move %s\n", PRMOVE(bestMove).c_str());
+        if(makemove) {
+            board->move(bestMove);
+        }
     }
 }

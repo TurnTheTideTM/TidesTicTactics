@@ -81,13 +81,16 @@ bool Miniboard::isFull() {
 
 Color Miniboard::whoWon() {
     for (MiniBitboard mask : winMasks) {
-        // Sieht auch Wins mit unentschiedenen boards
-        if ((((boardstate[COLOR_BOTH] ^ boardstate[COLOR_X]) ^ boardstate[COLOR_O]) & mask) == mask)
+        bool win1 = ((boardstate[COLOR_X] ^ boardstate[COLOR_BOTH]) & mask) == mask;
+        bool win2 = ((boardstate[COLOR_O] ^ boardstate[COLOR_BOTH]) & mask) == mask;
+        bool winboth = (win1 && win2);
+        if(winboth) {
             return COLOR_BOTH;
-        if (((boardstate[COLOR_X] ^ boardstate[COLOR_BOTH]) & mask) == mask)
+        } else if (win1) {
             return COLOR_O;
-        else if (((boardstate[COLOR_O] ^ boardstate[COLOR_BOTH]) & mask) == mask)
+        } else if (win2) {
             return COLOR_X;
+        }
     }
     return COLOR_NONE;
 }

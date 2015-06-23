@@ -10,9 +10,9 @@
 #include "bitboards.h"
 
 class Miniboard {
+public:
     MiniBitboard boardstate [COLOR_NUMBER + 1];    // X O and BOTH
     Color won;
-public:
     Miniboard();
     void setSquare(Square, Color);
     void setSquare(MiniBitboard, Color);

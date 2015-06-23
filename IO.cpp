@@ -12,7 +12,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
     setbuf(stdin, NULL);
     setbuf(stdin, NULL);
     int depth = 81;
-    int movetime = 3000; // 3 sec
+    int movetime = 500; // 3 sec
     Coordinate move;
     char inBuf[80], command[80];
     Color engineSide = COLOR_NONE;
