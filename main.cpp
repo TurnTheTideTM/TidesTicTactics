@@ -7,7 +7,7 @@ using namespace std;
 int main() {
     initAll();
     Board board;
-    /*board.move(SQUARE_0, SQUARE_3);
+    board.move(SQUARE_0, SQUARE_3);
     board.move(SQUARE_1, SQUARE_7);
     board.move(SQUARE_0, SQUARE_5);
     board.move(SQUARE_1, SQUARE_8);
@@ -57,9 +57,12 @@ int main() {
     board.move(SQUARE_7, SQUARE_1);
     board.move(SQUARE_1, SQUARE_4);
     board.move(SQUARE_4, SQUARE_0);
-    // board.move(SQUARE_0, SQUARE_8);*/
+    board.move(SQUARE_0, SQUARE_8);
+    board.move(SQUARE_8, SQUARE_1);
+    board.move(SQUARE_1, SQUARE_6);
+    board.move(SQUARE_6, SQUARE_0);
+    board.move(SQUARE_0, SQUARE_7);
 
-    // board.move(SQUARE_0, SQUARE_0);
     SEARCHINFO info;
     info.quit = false;
     IO io;

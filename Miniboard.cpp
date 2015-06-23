@@ -83,8 +83,7 @@ Color Miniboard::whoWon() {
     for (MiniBitboard mask : winMasks) {
         bool win1 = ((boardstate[COLOR_X] ^ boardstate[COLOR_BOTH]) & mask) == mask;
         bool win2 = ((boardstate[COLOR_O] ^ boardstate[COLOR_BOTH]) & mask) == mask;
-        bool winboth = (win1 && win2);
-        if(winboth) {
+        if((win1 && win2)) {
             return COLOR_BOTH;
         } else if (win1) {
             return COLOR_O;

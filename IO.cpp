@@ -50,7 +50,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             printf("time x - set thinking time to x seconds (depth still applies if set)\n");
             printf("view - show current depth and movetime settings\n");
             printf("** note ** - to reset time and depth, set to 0\n");
-            printf("enter moves using B8F8 notation\n\n\n");
+            printf("enter moves using B1..9F1..9 notation\n\n\n");
             continue;
         }
 
@@ -147,7 +147,7 @@ Coordinate IO::parseMove(char* string) {
     if (!(string[0] == 'B' && string[2] == 'F')) {
         return NOMOVE;
     }
-    int board_big = string[1] - '0';
-    int board_small = string[3] - '0';
+    int board_big = string[1] - '1';
+    int board_small = string[3] - '1';
     return board_big << 4 | board_small;
 }

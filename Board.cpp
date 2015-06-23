@@ -220,6 +220,8 @@ std::string Board::printBoard(){
                 result += "BOTH";
                 break;
         }
+        result += "\n";
+        result += std::to_string(bigBoard.whoWon());
     }
     result += "\n";
     result += " Plys: " + std::to_string(movecount) + "\n";

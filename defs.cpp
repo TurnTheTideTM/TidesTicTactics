@@ -32,6 +32,6 @@ int GetTimeMs() {
 std::string PRMOVE(Coordinate m) {
     int boardBig = (m & 0xF0) >> 4;
     int boardSmall = m & 0xF;
-    std::string returnMove= "B" + std::to_string(boardBig) + "F" + std::to_string(boardSmall) + " ";
+    std::string returnMove= {'B', ('1' + boardBig), 'F', ('1' + boardSmall), ' '};
     return returnMove;
-}
+};

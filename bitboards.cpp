@@ -3,6 +3,7 @@
 //
 
 #include "bitboards.h"
+#include "defs.h"
 
 #define RAND_64 (	(uint64_t)rand() | \
 					(uint64_t)rand() << 15 | \
