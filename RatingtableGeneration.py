@@ -1,11 +1,13 @@
 import cPickle
 
-winP1 = 5
-winP2 = -5
-chance_bonus = 2
-more_bonus = 0.1
-mid_bonus = 0.0
-minmaxscore = 3.5
+winP1 = 100
+winP2 = -100
+chance_bonus = 15
+more_bonus = 0
+mid_bonus = 4
+corner_bonus = 3
+edge_bonus = 2
+minmaxscore = 70
 
 winsMasks = [
     int('000000111', 2),
@@ -52,7 +54,9 @@ chancesMasks = [
     int('001010000', 2)
 ]
 
-midMask = int('000010000', 2)
+midMask    = int('000010000', 2)
+edgesMask  = int('010101010', 2)
+cornerMask = int('101000101', 2)
 
 
 def bewerteBoard(setP1, setP2):
@@ -101,6 +105,22 @@ def bewerteBoard(setP1, setP2):
 
     p1mid = setP1 & midMask
     p2mid = setP2 & midMask
+    
+    edges = 0
+    
+    for i in range(9):
+        if (setP1 & (1 << i)) & edgesMask:
+            edges += 1
+        if (setP2 & (1 << i)) & edgesMask:
+            edges -= 1
+            
+    corners = 0
+    
+    for i in range(9):
+        if (setP1 & (1 << i)) & cornerMask:
+            corners += 1
+        if (setP2 & (1 << i)) & cornerMask:
+            corners -= 1
 
     # BEWERTUNG -----------------
 
@@ -108,13 +128,16 @@ def bewerteBoard(setP1, setP2):
 
     ret += chancesP1 * chance_bonus
     ret -= chancesP2 * chance_bonus
+    
+    ret += edges * edge_bonus
+    ret += corners * corner_bonus
 
     if p1mid:
         ret += mid_bonus
     elif p2mid:
         ret -= mid_bonus
 
-    return min(max(ret, -minmaxscore), minmaxscore)
+    return int(min(max(ret, -minmaxscore), minmaxscore))
 
 
 def popCount(integer):
@@ -122,7 +145,7 @@ def popCount(integer):
 
 
 file = open("RatingTable.h", 'w')
-file.write("#pragma once\nfloat ratingTable [] = {0\n")
+file.write("#pragma once\nint ratingTable [] = {0\n")
 
 summe = 0
 arr = [0]

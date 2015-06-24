@@ -22,8 +22,8 @@ public:
     Transpositiontable(int);
     int getPvLine(int, Board*);
     void clearTable();
-    bool probeEntry(Board*, Coordinate *, double*, double, double, int);
-    void storeEntry(Board*, Coordinate , double, HashFlag, int);
+    bool probeEntry(Board*, Coordinate *, int*, int, int, int);
+    void storeEntry(Board*, Coordinate , int, HashFlag, int);
     Coordinate probePvMove(Board*);
 };
 

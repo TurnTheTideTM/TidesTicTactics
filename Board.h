@@ -38,7 +38,7 @@ public:
     bool isInMoves(int, int, Movelist*);
     bool isInMoves(HistoryMove, Movelist*);
     bool moveExists(HistoryMove);
-    double getScore();
+    int getScore();
     void getMoves(Movelist*);
     void getCaptureMoves(Movelist*);
     std::string printBoard();

@@ -51,7 +51,7 @@ void Transpositiontable::clearTable() {
     }
 }
 
-bool Transpositiontable::probeEntry(Board* board, Coordinate * move, double* score, double alpha, double beta, int depth) {
+bool Transpositiontable::probeEntry(Board* board, Coordinate * move, int* score, int alpha, int beta, int depth) {
     long index = board->key % count;
     if(positionTable[index].poskey == board->key) {
         *move = positionTable[index].move;
@@ -85,7 +85,7 @@ bool Transpositiontable::probeEntry(Board* board, Coordinate * move, double* sco
     return false;
 }
 
-void Transpositiontable::storeEntry(Board* board, Coordinate move, double score, HashFlag flag, int depth) {
+void Transpositiontable::storeEntry(Board* board, Coordinate move, int score, HashFlag flag, int depth) {
     long index = board->key % count;
     if(positionTable[index].poskey == 0) {
         newWrite++;

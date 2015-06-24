@@ -46,7 +46,7 @@ void Engine::clearForSearch(Board* board, SEARCHINFO* info) {
     info->fhf = 0;  // fail high first
 }
 
-double Engine::quiescence(double alpha, double beta, Board* board, SEARCHINFO* info) {
+int Engine::quiescence(int alpha, int beta, Board* board, SEARCHINFO* info) {
 
     if(( info->nodes & 2047 ) == 0) {
         checkUp(info);
@@ -58,7 +58,7 @@ double Engine::quiescence(double alpha, double beta, Board* board, SEARCHINFO* i
         return board->getScore();
     }
 
-    double Score = board->getScore();
+    int Score = board->getScore();
 
     if(Score >= beta) {
         return beta;
@@ -73,7 +73,7 @@ double Engine::quiescence(double alpha, double beta, Board* board, SEARCHINFO* i
 
     int moveNum;
     int Legal = 0;
-    Score = -INFINITY;
+    Score;
 
     for(moveNum = 0; moveNum < movelist.count; ++moveNum) {
 
@@ -103,7 +103,7 @@ double Engine::quiescence(double alpha, double beta, Board* board, SEARCHINFO* i
     return alpha;
 }
 
-double Engine::alphaBeta(double alpha, double beta, int depth, Board* board, SEARCHINFO* info) {
+int Engine::alphaBeta(int alpha, int beta, int depth, Board* board, SEARCHINFO* info) {
     if(depth == 0) {
         return quiescence(alpha, beta, board, info);
     }
@@ -115,7 +115,7 @@ double Engine::alphaBeta(double alpha, double beta, int depth, Board* board, SEA
         return board->getScore();
     }
 
-    double score = -INFINITY;
+    int score = -INFINITY;
     Coordinate pvMove = NOMOVE;
 
     if(board->transpositiontable->probeEntry(board, &pvMove, &score, alpha, beta, depth)) {
@@ -128,11 +128,11 @@ double Engine::alphaBeta(double alpha, double beta, int depth, Board* board, SEA
 
     int moveNum = 0;
     int legal = 0;
-    double oldAlpha = alpha;
+    int oldAlpha = alpha;
     Coordinate bestMove = NOMOVE;
 
     score = -INFINITY;
-    double bestScore = -INFINITY;
+    int bestScore = -INFINITY;
 
     if(pvMove != NOMOVE) {
         for(moveNum = 0; moveNum < movelist.count; ++moveNum) {
@@ -212,7 +212,7 @@ double Engine::alphaBeta(double alpha, double beta, int depth, Board* board, SEA
 }
 void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
     Coordinate bestMove = NOMOVE;
-    double bestScore = -INFINITY;
+    int bestScore;
     int currentDepth = 0;
     int pvMoves = 0;
     int pvNum = 0;
@@ -227,7 +227,7 @@ void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
         }
         pvMoves = board->transpositiontable->getPvLine(currentDepth, board);
         bestMove = board->pvArray[0];
-        printf("score: %.8f \tdepth:     %.10d nodes: %.10ld    time: %dms ",
+        printf("score: %d depth: %d nodes: %lld time: %dms ",
                bestScore,currentDepth,info->nodes,GetTimeMs()-info->starttime);
         if (info->POST_THINKING) {
             for(pvNum = 0; pvNum < pvMoves; ++pvNum) {
@@ -235,8 +235,8 @@ void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
             }
             printf("\n");
         }
-        printf("Hits:  %.8d  \tOverwrite: %.10d NewWrite: %.10d Cut:  %d\n",board->transpositiontable->hits,board->transpositiontable->overWrite,board->transpositiontable->newWrite,board->transpositiontable->cuts);
-        if (abs((int)bestScore) + MAXMOVES > ISMATE) {
+        printf("Hits: %d Overwrite: %d NewWrite: %d Cut: %d\n",board->transpositiontable->hits,board->transpositiontable->overWrite,board->transpositiontable->newWrite,board->transpositiontable->cuts);
+        if (abs(bestScore) + MAXMOVES > ISMATE) {
             break;
         }
         if (MAXMOVES - board->movecount - currentDepth < 1) {

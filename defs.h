@@ -46,7 +46,7 @@ enum HashFlag {
 
 struct S_MOVE {
     Coordinate move;
-    double score;
+    int score;
 };
 
 struct Movelist {
@@ -57,7 +57,7 @@ struct Movelist {
 struct HashEntry {
     PosKey poskey;
     Coordinate move;
-    double score;
+    int score;
     int depth;
     HashFlag flags;
 };
@@ -70,7 +70,7 @@ typedef struct {				// the info about the latest search
     bool timeset;
     int movestogo;
 
-    long nodes;
+    uint64_t nodes;
 
     bool quit;					// ends the search
     bool stopped;				// pauses the search
@@ -86,11 +86,12 @@ extern int GetTimeMs();
 extern std::string PRMOVE(Coordinate);
 
 extern Coordinate NOMOVE;
-extern double ISMATE;
+extern int ISMATE;
 extern int SIZE_TRANS_MB;
 extern int MAXMOVES;
-extern double INFINITY;
+extern int INFINITY;
 extern int rootDepth;
+extern int BOARDSCORE;
 
 extern Coordinate movelist [];
 

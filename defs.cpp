@@ -11,11 +11,12 @@
 #endif
 
 Coordinate NOMOVE = 170;
-double ISMATE = 16384;
+int ISMATE = 10081;
 int SIZE_TRANS_MB = 100;
 int MAXMOVES = 81;
-double INFINITY = 25565;
+int INFINITY = 25565;
 int rootDepth = 0;
+int BOARDSCORE = 100;
 
 Coordinate movelist [4];
 

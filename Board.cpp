@@ -102,7 +102,7 @@ bool Board::isSet(Square bigSquare, Square smallSquare, Color color) {
     return smallBoards[bigSquare].isSet(smallSquare, color);
 }
 
-double Board::getScore() {
+int Board::getScore() {
     switch (winner) {
         case COLOR_X:
             return ISMATE;
@@ -113,11 +113,11 @@ double Board::getScore() {
         default:
             break;
     }
-    double sum = 0;
+    int sum = 0;
     for(int i = 0; i < SQUARE_NUMBER; i++) {
         sum += smallBoards[i].getScore();
     }
-    sum += bigBoard.getScore() * 3;
+    sum += bigBoard.getScore() * 5;
     return sum;
 }
 
@@ -268,7 +268,6 @@ std::string Board::printBoard(){
                 break;
         }
         result += "\n";
-        result += std::to_string(bigBoard.whoWon());
     }
     result += "\n";
     result += " Plys: " + std::to_string(movecount) + "\n";

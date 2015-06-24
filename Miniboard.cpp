@@ -42,12 +42,12 @@ void Miniboard::unsetSquare(int square, Color color) {
     boardstate[COLOR_BOTH] &= singleSquaresMasksNegativ[square];
 }
 
-double Miniboard::getScore() {
+int Miniboard::getScore() {
     switch (whoWon()) {
         case COLOR_X:
-            return 5;
+            return BOARDSCORE;
         case COLOR_O:
-            return -5;
+            return -BOARDSCORE;
         case COLOR_BOTH:
             return 0;
         default:
@@ -110,6 +110,6 @@ std::string Miniboard::printMiniboard() {
             result += " |\n |";
         }
     }
-    result += " |\n \\ - - - /";
+    result += " |\n \\ - - - /\n";
     return result;
 }

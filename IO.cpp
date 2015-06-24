@@ -83,7 +83,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
 
         if(!strcmp(command, "eval")) {
             printf(board->printBoard().c_str());
-            printf("\nEval:%f",board->getScore());
+            printf("\nEval:%d",board->getScore());
             continue;
         }
         if(!strcmp(command, "quit")) {

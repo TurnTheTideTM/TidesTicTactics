@@ -20,7 +20,7 @@ public:
     void unsetSquare(Square, Color);
     void unsetSquare(MiniBitboard, Color);
     void unsetSquare(int, Color);
-    double getScore();
+    int getScore();
     bool isSet(Square, Color);
     bool isSet(int, Color);
     bool isWon();
