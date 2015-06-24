@@ -11,6 +11,7 @@
 class IO {
 public:
     void consoleLoop(Board*, SEARCHINFO*);
+    void demo1(Board*, int);
     Coordinate parseMove(char*);
 };
 

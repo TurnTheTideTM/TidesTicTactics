@@ -6,6 +6,80 @@
 #include "string.h"
 #include "Engine.h"
 
+void IO::demo1(Board* board, int depth) {
+    struct coordpair {
+        Square moveBig;
+        Square moveSmall;
+    };
+    coordpair game [81] = {
+            coordpair {SQUARE_0, SQUARE_3},
+            coordpair {SQUARE_1, SQUARE_7},
+            coordpair {SQUARE_0, SQUARE_5},
+            coordpair {SQUARE_1, SQUARE_8},
+            coordpair {SQUARE_2, SQUARE_0},
+            coordpair {SQUARE_4, SQUARE_2},
+            coordpair {SQUARE_2, SQUARE_8},
+            coordpair {SQUARE_6, SQUARE_4},
+            coordpair {SQUARE_3, SQUARE_4},
+            coordpair {SQUARE_7, SQUARE_3},
+            coordpair {SQUARE_4, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_5},
+            coordpair {SQUARE_6, SQUARE_2},
+            coordpair {SQUARE_8, SQUARE_0},
+            coordpair {SQUARE_7, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_8},
+            coordpair {SQUARE_5, SQUARE_7},
+            coordpair {SQUARE_8, SQUARE_5},
+            coordpair {SQUARE_8, SQUARE_8},
+
+            coordpair {SQUARE_4, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_2},
+            coordpair {SQUARE_2, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_8},
+            coordpair {SQUARE_8, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_2},
+
+            // Erste Variante der Engine, fehlerhafte Scoreberechnung
+            coordpair {SQUARE_2, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_8},
+            coordpair {SQUARE_8, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_6},
+
+            // Variante mit gefixtem Score
+            coordpair {SQUARE_6, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_8},
+            coordpair {SQUARE_8, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_8},
+            coordpair {SQUARE_8, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_6},
+
+            coordpair {SQUARE_NONE, SQUARE_NONE}
+    };
+    for(int i = 0; i < depth; i++) {
+        if (game[i].moveBig != SQUARE_NONE)
+            board->move(game[i].moveBig, game[i].moveSmall);
+        else
+            break;
+    }
+}
+
 void IO::consoleLoop(Board* board, SEARCHINFO* info) {
     printf("Welcome to TidesTicTactics in Console Mode!\n");
     info->POST_THINKING = true;
@@ -45,13 +119,14 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             printf("print - show board\n");
             printf("post - show thinking\n");
             printf("nopost - do not show thinking\n");
-            // printf("new - start new game # TODO\n");
+            printf("new - start new game\n");
             printf("go - set computer thinking\n");
             printf("depth x - set depth to x\n");
             printf("time x - set thinking time to x seconds (depth still applies if set)\n");
             printf("view - show current depth and movetime settings\n");
             printf("moves - show valid moves\n");
             printf("captures - show moves winning a board");
+            printf("test x - load first x moves of demo");
             printf("** note ** - to reset time and depth, set to 0\n");
             printf("enter moves using B1..9F1..9 notation\n\n\n");
             continue;
@@ -112,7 +187,9 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
         }
 
         if(!strcmp(command, "demo")) {
-            while (board->winner == COLOR_NONE) {
+            Color temp = COLOR_NONE;
+            while (temp != board->toMove && board->winner == COLOR_NONE) {
+                temp = board->toMove;
                 info->starttime = GetTimeMs();
                 info->depth = std::min(depth, MAXMOVES - board->movecount);
                 if (movetime != 0) {
@@ -144,6 +221,16 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             continue;
         }
 
+        if(!strcmp(command, "test")) {
+            engineSide = COLOR_NONE;
+            while (board->movecount > 0)
+                board->undo();
+            int target;
+            sscanf(inBuf, "loaddemo %d", &target);
+            demo1(board, target);
+            continue;
+        }
+
         if(!strcmp(command, "time")) {
             sscanf(inBuf, "time %d", &movetime);
             movetime *= 1000;
@@ -152,7 +239,8 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
 
         if(!strcmp(command, "new")) {
             engineSide = COLOR_O;
-            printf("#TODO new noch nicht implementiert");
+            while (board->movecount > 0)
+                board->undo();
             continue;
         }
 
