@@ -11,6 +11,8 @@ extern MiniBitboard singleSquaresMasks[SQUARE_NUMBER];
 extern MiniBitboard singleSquaresMasksNegativ[SQUARE_NUMBER];
 extern MiniBitboard winMasks[8];
 extern MiniBitboard chanceMasks[8*3];
+extern MiniBitboard captureBoard[1<<9];
+extern int popcountLookup[1<<9];
 
 extern PosKey hashkeys[1<<8]; // Key = position
 

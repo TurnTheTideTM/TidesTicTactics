@@ -177,6 +177,53 @@ void Board::getMoves(Movelist* movelist) {
     }
 }
 
+void Board::getCaptureMoves(Movelist* movelist) {
+    movelist->count = 0;
+    // wenn das brett gewonnen ist kann nicht weiter gezogen werden.
+    if (winner != COLOR_NONE) {
+        return;
+    }
+    const MiniBitboard targetBoard = smallBoards[next].boardstate[toMove];
+    MiniBitboard moves;
+    if(popcountLookup[targetBoard] == 9) {
+        for (int i = 0; i < 9; i++) {
+            if(bigBoard.isSet(i, COLOR_BOTH))
+                continue;
+            moves = captureBoard[smallBoards[i].boardstate[toMove]];
+            int feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
+            while (moves != 0) {
+                moves ^= singleSquaresMasks[feld];
+                if (feld != prev && (smallBoards[i].boardstate[COLOR_BOTH] & singleSquaresMasks[feld]) == 0) {
+                    movelist->moves[movelist->count].move = i << 4 | feld;
+                    movelist->count++;
+                }
+                feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
+            }
+        }
+        return;
+    } else if(popcountLookup[targetBoard] == 8) {
+        moves = captureBoard[targetBoard];
+        int feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
+        movelist->moves[movelist->count].move = next << 4 | feld;
+        movelist->count++;
+        return;
+    }
+    else {
+        if (bigBoard.isSet(next, COLOR_BOTH))
+            return;
+        moves = captureBoard[targetBoard];
+        int feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
+        while (moves != 0) {
+            moves ^= singleSquaresMasks[feld];
+            if (feld != prev && (smallBoards[next].boardstate[COLOR_BOTH] & singleSquaresMasks[feld]) == 0) {
+                movelist->moves[movelist->count].move = next << 4 | feld;
+                movelist->count++;
+            }
+            feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
+        }
+    }
+}
+
 bool Board::isInMoves(int x, int y, Movelist* moves) {
     for (int i = 0; i < moves->count; i++) {
         if((x<<4 | y) == moves->moves[i].move)

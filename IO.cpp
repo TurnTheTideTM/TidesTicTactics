@@ -17,6 +17,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
     char inBuf[80], command[80];
     Color engineSide = COLOR_NONE;
     Engine engine;
+    Movelist movecheck;
 
     while (true) {
         fflush(stdout);
@@ -40,7 +41,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
         if(!strcmp(command, "help")) {
             printf("\nCommands:\n");
             printf("quit - quit game\n");
-            printf("force - will move\n");
+            printf("force - will not move\n");
             printf("print - show board\n");
             printf("post - show thinking\n");
             printf("nopost - do not show thinking\n");
@@ -49,8 +50,34 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             printf("depth x - set depth to x\n");
             printf("time x - set thinking time to x seconds (depth still applies if set)\n");
             printf("view - show current depth and movetime settings\n");
+            printf("moves - show valid moves\n");
+            printf("captures - show moves winning a board");
             printf("** note ** - to reset time and depth, set to 0\n");
             printf("enter moves using B1..9F1..9 notation\n\n\n");
+            continue;
+        }
+
+        if(!strcmp(command, "moves")) {
+            board->getMoves(&movecheck);
+            if (movecheck.count == 0) {
+                printf("No moves found");
+            }
+            for(int i = 0; i < movecheck.count; i++) {
+                printf("%s ", PRMOVE(movecheck.moves[i].move).c_str());
+            }
+            printf("\n");
+            continue;
+        }
+
+        if(!strcmp(command, "captures")) {
+            board->getCaptureMoves(&movecheck);
+            if (movecheck.count == 0) {
+                printf("No captures found");
+            }
+            for(int i = 0; i < movecheck.count; i++) {
+                printf("%s ", PRMOVE(movecheck.moves[i].move).c_str());
+            }
+            printf("\n");
             continue;
         }
 
@@ -80,7 +107,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
         }
 
         if(!strcmp(command, "force")) {
-            engineSide = board->toMove;
+            engineSide = COLOR_NONE;
             continue;
         }
 

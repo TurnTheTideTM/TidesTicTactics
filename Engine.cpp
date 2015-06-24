@@ -46,9 +46,66 @@ void Engine::clearForSearch(Board* board, SEARCHINFO* info) {
     info->fhf = 0;  // fail high first
 }
 
+double Engine::quiescence(double alpha, double beta, Board* board, SEARCHINFO* info) {
+
+    if(( info->nodes & 2047 ) == 0) {
+        checkUp(info);
+    }
+
+    info->nodes++;
+
+    if (board->movecount > MAXMOVES - 1) {
+        return board->getScore();
+    }
+
+    double Score = board->getScore();
+
+    if(Score >= beta) {
+        return beta;
+    }
+
+    if(Score > alpha) {
+        alpha = Score;
+    }
+
+    Movelist movelist;
+    board->getCaptureMoves(&movelist);		// generates captures, not moves
+
+    int moveNum;
+    int Legal = 0;
+    Score = -INFINITY;
+
+    for(moveNum = 0; moveNum < movelist.count; ++moveNum) {
+
+        pickNextMove(moveNum, &movelist);
+
+        board->move(movelist.moves[moveNum].move);
+        Legal++;
+        Score = -quiescence( -beta, -alpha, board, info);
+        board->undo();
+
+        if(info->stopped) {
+            return 0;
+        }
+
+        if(Score > alpha) {
+            if(Score >= beta) {
+                if(Legal==1) {
+                    info->fhf++;
+                }
+                info->fh++;
+                return beta;
+            }
+            alpha = Score;
+        }
+    }
+
+    return alpha;
+}
+
 double Engine::alphaBeta(double alpha, double beta, int depth, Board* board, SEARCHINFO* info) {
     if(depth == 0) {
-        return board->getScore();
+        return quiescence(alpha, beta, board, info);
     }
     if ((info->nodes & 2047) == 0) {
         checkUp(info);

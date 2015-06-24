@@ -15,6 +15,7 @@ public:
     void pickNextMove(int, Movelist*);
     void clearForSearch(Board*, SEARCHINFO*);
     double alphaBeta(double, double, int, Board*, SEARCHINFO*);
+    double quiescence(double, double, Board*, SEARCHINFO*);
     void searchPosition(Board*, SEARCHINFO*, bool);
 };
 

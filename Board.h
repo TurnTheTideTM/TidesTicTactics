@@ -40,6 +40,7 @@ public:
     bool moveExists(HistoryMove);
     double getScore();
     void getMoves(Movelist*);
+    void getCaptureMoves(Movelist*);
     std::string printBoard();
     std::string printBoard(Color);
 };
