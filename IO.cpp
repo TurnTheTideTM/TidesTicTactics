@@ -69,6 +69,44 @@ void IO::demo1(Board* board, int depth) {
             coordpair {SQUARE_0, SQUARE_7},
             coordpair {SQUARE_7, SQUARE_6},
             coordpair {SQUARE_6, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_1},
+
+
+            coordpair {SQUARE_NONE, SQUARE_NONE}
+    };
+    for(int i = 0; i < depth; i++) {
+        if (game[i].moveBig != SQUARE_NONE)
+            board->move(game[i].moveBig, game[i].moveSmall);
+        else
+            break;
+    }
+}
+
+void IO::demo2(Board* board, int depth) {
+    struct coordpair {
+        Square moveBig;
+        Square moveSmall;
+    };
+    coordpair game [81] = {
+            coordpair {SQUARE_4, SQUARE_2},
+            coordpair {SQUARE_0, SQUARE_0},
+            coordpair {SQUARE_4, SQUARE_6},
+            coordpair {SQUARE_0, SQUARE_2},
+            coordpair {SQUARE_5, SQUARE_3},
+            coordpair {SQUARE_1, SQUARE_6},
+            coordpair {SQUARE_5, SQUARE_5},
+            coordpair {SQUARE_1, SQUARE_8},
+            coordpair {SQUARE_7, SQUARE_1},
+            coordpair {SQUARE_2, SQUARE_3},
+            coordpair {SQUARE_7, SQUARE_7},
+            coordpair {SQUARE_4, SQUARE_1},
+            coordpair {SQUARE_8, SQUARE_0},
+            coordpair {SQUARE_4, SQUARE_7},
+            coordpair {SQUARE_8, SQUARE_8},
+            coordpair {SQUARE_7, SQUARE_5},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
@@ -127,6 +165,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             printf("moves - show valid moves\n");
             printf("captures - show moves winning a board");
             printf("test x - load first x moves of demo");
+            printf("test2 x - load first x moves of demo");
             printf("** note ** - to reset time and depth, set to 0\n");
             printf("enter moves using B1..9F1..9 notation\n\n\n");
             continue;
@@ -226,8 +265,18 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             while (board->movecount > 0)
                 board->undo();
             int target;
-            sscanf(inBuf, "loaddemo %d", &target);
+            sscanf(inBuf, "test %d", &target);
             demo1(board, target);
+            continue;
+        }
+
+        if(!strcmp(command, "test2")) {
+            engineSide = COLOR_NONE;
+            while (board->movecount > 0)
+                board->undo();
+            int target;
+            sscanf(inBuf, "test2 %d", &target);
+            demo2(board, target);
             continue;
         }
 

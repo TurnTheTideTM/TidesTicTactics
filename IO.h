@@ -13,6 +13,8 @@ public:
     void consoleLoop(Board*, SEARCHINFO*);
     void demo1(Board*, int);
     Coordinate parseMove(char*);
+
+    void demo2(Board *board, int depth);
 };
 
 

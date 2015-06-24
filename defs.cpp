@@ -12,7 +12,7 @@
 
 Coordinate NOMOVE = 170;
 int ISMATE = 10081;
-int SIZE_TRANS_MB = 100;
+int SIZE_TRANS_MB = 250;
 int MAXMOVES = 81;
 int INFINITY = 25565;
 int rootDepth = 0;
