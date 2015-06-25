@@ -107,7 +107,7 @@ def bewerteBoard(setP1, setP2):
     p2mid = setP2 & midMask
     
     edges = 0
-    
+
     for i in range(9):
         if (setP1 & (1 << i)) & edgesMask:
             edges += 1
