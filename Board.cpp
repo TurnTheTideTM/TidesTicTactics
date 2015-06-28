@@ -113,7 +113,10 @@ int Board::getScore() {
         sum += smallBoards[i].getScore();
     }
     sum += bigBoard.getScore() * 5;
-    return sum;
+    if (toMove == COLOR_X)
+        return sum;
+    else
+        return -sum;
 }
 
 
