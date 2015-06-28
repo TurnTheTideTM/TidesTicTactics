@@ -19,11 +19,6 @@ void Board::setzeFeld(Square squareBig, Square squareSmall, Color color) {
     key ^= hashkeys[squareBig<<4|squareSmall];
 }
 
-void Board::setzeFeld(int squareBig, int squareSmall, Color color) {
-    smallBoards[squareBig].setSquare(squareSmall, color);
-    key ^= hashkeys[squareBig<<4|squareSmall];
-}
-
 void Board::move(HistoryMove m) {
     move((Square) ((m & 0xF0) >> 4), (Square) (m & 0xF));
 }
@@ -137,7 +132,7 @@ void Board::getMoves(Movelist* movelist) {
                 if((x == 4) && (y == 4)) {
                     continue;
                 }
-                movelist->moves[movelist->count].move = x<<4 | y;
+                movelist->moves[movelist->count].move = (Coordinate) (x<<4 | y);
                 movelist->count++;
             }
         }
@@ -161,13 +156,12 @@ void Board::getMoves(Movelist* movelist) {
             }
                 // andernfalls werden alle freien squares hinzugefuegt
             else {
-                MiniBitboard targets;
                 for(x = 0; x < 9; x++) {
                     targets = (smallBoards[x].boardstate[COLOR_BOTH] | singleSquaresMasks[prev]) ^ full;
-                    int feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
+                    feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
                     while (targets != 0) {
                         targets ^= singleSquaresMasks[feld];
-                        movelist->moves[movelist->count].move = x << 4 | feld;
+                        movelist->moves[movelist->count].move = (Coordinate) (x << 4 | feld);
                         movelist->count++;
                         feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
                     }
@@ -183,7 +177,7 @@ void Board::getCaptureMoves(Movelist* movelist) {
     if (winner != COLOR_NONE) {
         return;
     }
-    const MiniBitboard targetBoard = smallBoards[next].boardstate[toMove];
+    const MiniBitboard targetBoard = smallBoards[next].boardstate[COLOR_BOTH];
     MiniBitboard moves;
     if(popcountLookup[targetBoard] == 9) {
         for (int i = 0; i < 9; i++) {
@@ -194,7 +188,7 @@ void Board::getCaptureMoves(Movelist* movelist) {
             while (moves != 0) {
                 moves ^= singleSquaresMasks[feld];
                 if (feld != prev && (smallBoards[i].boardstate[COLOR_BOTH] & singleSquaresMasks[feld]) == 0) {
-                    movelist->moves[movelist->count].move = i << 4 | feld;
+                    movelist->moves[movelist->count].move = (Coordinate) (i << 4 | feld);
                     movelist->count++;
                 }
                 feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
@@ -211,7 +205,7 @@ void Board::getCaptureMoves(Movelist* movelist) {
     else {
         if (bigBoard.isSet(next, COLOR_BOTH))
             return;
-        moves = captureBoard[targetBoard];
+        moves = captureBoard[smallBoards[next].boardstate[toMove]];
         int feld = sizeof(unsigned int) * 8 - __builtin_clz(moves) - 1;
         while (moves != 0) {
             moves ^= singleSquaresMasks[feld];
@@ -266,6 +260,8 @@ std::string Board::printBoard(){
             case COLOR_BOTH:
                 result += "BOTH";
                 break;
+            default:
+                break;
         }
         result += "\n";
     }
@@ -290,63 +286,6 @@ std::string Board::printBoard(){
                 result += " X";
             else if (isSet(feld_g, feld_k, COLOR_O))
                 result += " O";
-            else if (isInMoves(feld_g, feld_k, &moves)) {
-                result += " ~";
-            }
-            else
-                result += "  ";
-        }
-        result += " |\n";
-        if (x % 3 == 2 and x < 8)
-            result += " | - - - + - - - + - - - |\n";
-    }
-    result += " \\ - - - + - - - + - - - /\n";
-    result += " Metaboard\n";
-    result += bigBoard.printMiniboard();
-    return result;
-}
-
-std::string Board::printBoard(Color color) {
-    std::string result = "";
-    if (winner == COLOR_NONE) {
-        result +=  "To move: ";
-        if (toMove == COLOR_X)
-            result += "X";
-        else
-            result += "O";
-    } else {
-        result += "Winner: ";
-        switch (winner) {
-            case COLOR_X:
-                result += "X";
-                break;
-            case COLOR_O:
-                result += "O";
-                break;
-            case COLOR_BOTH:
-                result += "BOTH";
-                break;
-        }
-    }
-    result += "\n";
-    result += " Plys: " + std::to_string(movecount) + "\n";
-    result += " PosKey: " + std::to_string(key) + "\n";
-    result += " / - - - + - - - + - - - \\\n";
-
-    Square feld_g_alt = SQUARE_NONE;
-    Movelist moves;
-    getMoves(&moves);
-
-    for (int x = 0; x < 9; x++) {
-        for (int y = 0; y < 9; y++) {
-            Square feld_g = static_cast<Square> (y / 3 + (x / 3) * 3);
-            Square feld_k = static_cast<Square> (y % 3 + (x % 3) * 3);
-            if (feld_g != feld_g_alt) {
-                feld_g_alt = feld_g;
-                result += " |";
-            }
-            if (color != COLOR_NONE && isSet(feld_g, feld_k, color))
-                result += " " + (std::to_string(color));
             else if (isInMoves(feld_g, feld_k, &moves)) {
                 result += " ~";
             }

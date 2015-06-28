@@ -12,19 +12,19 @@
  */
 Transpositiontable::Transpositiontable(int sizeMB) {
     int hashSize = 0x100000 * sizeMB;
-    count = hashSize / sizeof(HashEntry);
+    count = (long) (hashSize / sizeof(HashEntry));
     count -= 2;
     // if (positionTable != NULL) free(positionTable);
-    positionTable = (HashEntry*) malloc(count * sizeof(HashEntry));
+    positionTable = (HashEntry *) malloc(count * sizeof(HashEntry));
     clearTable();
 }
 
-int Transpositiontable::getPvLine(int depth, Board* board) {
+int Transpositiontable::getPvLine(int depth, Board *board) {
     Coordinate move = probePvMove(board);
     int counter = 0;
 
-    while(move != NOMOVE && counter < depth) {
-        if(board->moveExists(move)) {
+    while (move != NOMOVE && counter < depth) {
+        if (board->moveExists(move)) {
             board->move(move);
             board->pvArray[counter++] = move;
         } else {
@@ -42,7 +42,7 @@ int Transpositiontable::getPvLine(int depth, Board* board) {
 
 void Transpositiontable::clearTable() {
     HashEntry *hashEntry;
-    for(hashEntry = positionTable; hashEntry < positionTable + count; hashEntry++) {
+    for (hashEntry = positionTable; hashEntry < positionTable + count; hashEntry++) {
         hashEntry->poskey = 0;
         hashEntry->move = NOMOVE;
         hashEntry->depth = 0;
@@ -51,16 +51,16 @@ void Transpositiontable::clearTable() {
     }
 }
 
-bool Transpositiontable::probeEntry(Board* board, Coordinate * move, int* score, int alpha, int beta, int depth) {
-    long index = board->key % count;
-    if(positionTable[index].poskey == board->key) {
+bool Transpositiontable::probeEntry(Board *board, Coordinate *move, int *score, int alpha, int beta, int depth) {
+    long index = (long) (board->key % count);
+    if (positionTable[index].poskey == board->key) {
         *move = positionTable[index].move;
         if (positionTable[index].depth >= depth) {
             hits++;
 
             *score = positionTable[index].score;
-            if(*score > ISMATE) *score -= board->movecount;
-            else if(*score < -ISMATE) *score += board->movecount;
+            if (*score > ISMATE) *score -= board->movecount;
+            else if (*score < -ISMATE) *score += board->movecount;
 
             switch (positionTable[index].flags) {
                 case HF_ALPHA:
@@ -70,7 +70,7 @@ bool Transpositiontable::probeEntry(Board* board, Coordinate * move, int* score,
                     }
                     break;
                 case HF_BETA:
-                    if (*score >=beta) {
+                    if (*score >= beta) {
                         *score = beta;
                         return true;
                     }
@@ -85,14 +85,14 @@ bool Transpositiontable::probeEntry(Board* board, Coordinate * move, int* score,
     return false;
 }
 
-void Transpositiontable::storeEntry(Board* board, Coordinate move, int score, HashFlag flag, int depth) {
-    long index = board->key % count;
-    if(positionTable[index].poskey == 0) {
+void Transpositiontable::storeEntry(Board *board, Coordinate move, int score, HashFlag flag, int depth) {
+    long index = (long) (board->key % count);
+    if (positionTable[index].poskey == 0) {
         newWrite++;
     } else {
         overWrite++;
     }
-    if(score > ISMATE) score += board->movecount;
+    if (score > ISMATE) score += board->movecount;
     else if (score < -ISMATE) score -= board->movecount;
 
     positionTable[index].move = move;
@@ -102,8 +102,8 @@ void Transpositiontable::storeEntry(Board* board, Coordinate move, int score, Ha
     positionTable[index].depth = depth;
 }
 
-Coordinate Transpositiontable::probePvMove(Board* board) {
-    long index = board->key % count;
+Coordinate Transpositiontable::probePvMove(Board *board) {
+    long index = (long) (board->key % count);
     if (board->key == positionTable[index].poskey) {
         return positionTable[index].move;
     }

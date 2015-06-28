@@ -30,7 +30,6 @@ public:
 public:
     Board();
     void setzeFeld(Square, Square, Color);
-    void setzeFeld(int, int, Color);
     void move(Square, Square);
     void move(HistoryMove);
     void undo();
@@ -42,7 +41,6 @@ public:
     void getMoves(Movelist*);
     void getCaptureMoves(Movelist*);
     std::string printBoard();
-    std::string printBoard(Color);
 };
 
 

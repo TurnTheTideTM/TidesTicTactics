@@ -12,73 +12,23 @@ void IO::demo1(Board* board, int depth) {
         Square moveSmall;
     };
     coordpair game [81] = {
-            coordpair {SQUARE_0, SQUARE_3},
-            coordpair {SQUARE_1, SQUARE_7},
-            coordpair {SQUARE_0, SQUARE_5},
-            coordpair {SQUARE_1, SQUARE_8},
-            coordpair {SQUARE_2, SQUARE_0},
-            coordpair {SQUARE_4, SQUARE_2},
-            coordpair {SQUARE_2, SQUARE_8},
-            coordpair {SQUARE_6, SQUARE_4},
-            coordpair {SQUARE_3, SQUARE_4},
-            coordpair {SQUARE_7, SQUARE_3},
-            coordpair {SQUARE_4, SQUARE_7},
-            coordpair {SQUARE_7, SQUARE_5},
-            coordpair {SQUARE_6, SQUARE_2},
-            coordpair {SQUARE_8, SQUARE_0},
-            coordpair {SQUARE_7, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_8},
-            coordpair {SQUARE_5, SQUARE_7},
-            coordpair {SQUARE_8, SQUARE_5},
-            coordpair {SQUARE_8, SQUARE_8},
-
-            coordpair {SQUARE_4, SQUARE_5},
-            coordpair {SQUARE_5, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_3},
-            coordpair {SQUARE_3, SQUARE_2},
-            coordpair {SQUARE_2, SQUARE_7},
-            coordpair {SQUARE_7, SQUARE_8},
-            coordpair {SQUARE_8, SQUARE_3},
-            coordpair {SQUARE_3, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_2},
-
-            // Erste Variante der Engine, fehlerhafte Scoreberechnung
-            coordpair {SQUARE_2, SQUARE_5},
-            coordpair {SQUARE_5, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_0},
-            coordpair {SQUARE_0, SQUARE_0},
             coordpair {SQUARE_0, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_8},
-            coordpair {SQUARE_8, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_6},
-
-            // Variante mit gefixtem Score
-            coordpair {SQUARE_6, SQUARE_5},
-            coordpair {SQUARE_5, SQUARE_8},
-            coordpair {SQUARE_8, SQUARE_7},
-            coordpair {SQUARE_7, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_3},
             coordpair {SQUARE_0, SQUARE_8},
-            coordpair {SQUARE_8, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_0},
-            coordpair {SQUARE_0, SQUARE_7},
-            coordpair {SQUARE_7, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_3},
-            coordpair {SQUARE_3, SQUARE_5},
-            coordpair {SQUARE_5, SQUARE_0},
-            coordpair {SQUARE_0, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_5},
-            coordpair {SQUARE_5, SQUARE_4},
+            coordpair {SQUARE_0, SQUARE_5},
+            coordpair {SQUARE_3, SQUARE_0},
+            coordpair {SQUARE_2, SQUARE_2},
+            coordpair {SQUARE_3, SQUARE_2},
+            coordpair {SQUARE_2, SQUARE_6},
             coordpair {SQUARE_4, SQUARE_3},
-            coordpair {SQUARE_3, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_7},
-
+            coordpair {SQUARE_3, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_5},
+            coordpair {SQUARE_4, SQUARE_0},
+            coordpair {SQUARE_5, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_8},
+            coordpair {SQUARE_5, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_4},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
@@ -95,25 +45,17 @@ void IO::demo2(Board* board, int depth) {
         Square moveBig;
         Square moveSmall;
     };
+    // coordpair {SQUARE_0, SQUARE_0},
     coordpair game [81] = {
-            coordpair {SQUARE_4, SQUARE_2},
-            coordpair {SQUARE_0, SQUARE_0},
-            coordpair {SQUARE_4, SQUARE_6},
-            coordpair {SQUARE_0, SQUARE_2},
-            coordpair {SQUARE_5, SQUARE_3},
-            coordpair {SQUARE_1, SQUARE_6},
-            coordpair {SQUARE_5, SQUARE_5},
-            coordpair {SQUARE_1, SQUARE_8},
-            coordpair {SQUARE_7, SQUARE_1},
-            coordpair {SQUARE_2, SQUARE_3},
-            coordpair {SQUARE_7, SQUARE_7},
+            coordpair {SQUARE_0, SQUARE_5},
+            coordpair {SQUARE_0, SQUARE_8},
+            coordpair {SQUARE_1, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_4},
+            coordpair {SQUARE_3, SQUARE_7},
+            coordpair {SQUARE_4, SQUARE_0},
             coordpair {SQUARE_4, SQUARE_1},
-            coordpair {SQUARE_8, SQUARE_0},
-            coordpair {SQUARE_4, SQUARE_7},
-            coordpair {SQUARE_8, SQUARE_8},
-            coordpair {SQUARE_7, SQUARE_5},
-            coordpair {SQUARE_8, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_7},
+            coordpair {SQUARE_6, SQUARE_2},
+            coordpair {SQUARE_6, SQUARE_6},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
@@ -320,5 +262,5 @@ Coordinate IO::parseMove(char* string) {
     }
     int board_big = string[1] - '1';
     int board_small = string[3] - '1';
-    return board_big << 4 | board_small;
+    return (Coordinate) (board_big << 4 | board_small);
 }

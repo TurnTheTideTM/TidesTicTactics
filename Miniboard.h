@@ -12,13 +12,8 @@
 class Miniboard {
 public:
     MiniBitboard boardstate [COLOR_NUMBER + 1];    // X O and BOTH
-    Color won;
     Miniboard();
     void setSquare(Square, Color);
-    void setSquare(MiniBitboard, Color);
-    void setSquare(int, Color);
-    void unsetSquare(Square, Color);
-    void unsetSquare(MiniBitboard, Color);
     void unsetSquare(int, Color);
     int getScore();
     bool isSet(Square, Color);

@@ -90,9 +90,7 @@ extern int ISMATE;
 extern int SIZE_TRANS_MB;
 extern int MAXMOVES;
 extern int INFINITY;
-extern int rootDepth;
 extern int BOARDSCORE;
 
-extern Coordinate movelist [];
 
 #endif //TIDESTICTACTICS_DEFS_H

@@ -156,7 +156,6 @@ int Engine::alphaBeta(int alpha, int beta, int depth, Board* board, SEARCHINFO* 
         } else {
             score = -alphaBeta(-beta, -alpha, depth - 1, board, info);
         }
-        // TODO ?
         board->undo();
         if (info->stopped) {
             return 0;
@@ -220,7 +219,6 @@ void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
     clearForSearch(board, info);
 
     for(currentDepth = 1; currentDepth <= info->depth; ++currentDepth) {
-        rootDepth = currentDepth;
         bestScore = alphaBeta(-INFINITY, INFINITY, currentDepth, board, info);
         if(info->stopped) {
             break;

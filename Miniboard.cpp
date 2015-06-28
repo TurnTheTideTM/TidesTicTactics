@@ -6,35 +6,14 @@
 #include "RatingTable.h"
 
 Miniboard::Miniboard() {
-    won = COLOR_NONE;
     boardstate[COLOR_X] = 0b0000000000;
     boardstate[COLOR_O] = 0b0000000000;
     boardstate[COLOR_BOTH] = 0b000000000;
 }
 
-void Miniboard::setSquare(MiniBitboard toSet, Color color) {
-    boardstate[color] |= toSet;
-    boardstate[COLOR_BOTH] |= toSet;
-}
-
 void Miniboard::setSquare(Square square, Color color) {
     boardstate[color] = boardstate[color] | singleSquaresMasks[square];
     boardstate[COLOR_BOTH] |= singleSquaresMasks[square];
-}
-
-void Miniboard::setSquare(int square, Color color) {
-    boardstate[color] |= singleSquaresMasks[square];
-    boardstate[COLOR_BOTH] |= singleSquaresMasks[square];
-}
-
-void Miniboard::unsetSquare(MiniBitboard toSet, Color color) {
-    boardstate[color] ^= toSet;
-    boardstate[COLOR_BOTH] ^= toSet;
-}
-
-void Miniboard::unsetSquare(Square square, Color color) {
-    boardstate[color] &= singleSquaresMasksNegativ[square];
-    boardstate[COLOR_BOTH] &= singleSquaresMasksNegativ[square];
 }
 
 void Miniboard::unsetSquare(int square, Color color) {
