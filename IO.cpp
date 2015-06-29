@@ -34,6 +34,11 @@ void IO::demo1(Board* board, int depth) {
             coordpair {SQUARE_1, SQUARE_8},
             coordpair {SQUARE_8, SQUARE_0},
             coordpair {SQUARE_0, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_1},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
