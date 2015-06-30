@@ -30,6 +30,7 @@ MiniBitboard full = 0b111111111;
 
 MiniBitboard captureBoard[1<<9];
 int popcountLookup[1<<9];
+bool wonBoard[1<<9];
 
 
 void initBitboards() {
@@ -72,5 +73,15 @@ void initBitboards() {
             }
         }
         captureBoard[feld] = result;
+
+        // wonBoard
+
+        for (MiniBitboard mask : winMasks) {
+            if ((feld & mask) == mask) {
+                wonBoard[feld] = true;
+                break;
+            }
+        }
     }
+
 }

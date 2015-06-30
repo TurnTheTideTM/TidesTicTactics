@@ -9,11 +9,23 @@ Miniboard::Miniboard() {
     boardstate[COLOR_X] = 0b0000000000;
     boardstate[COLOR_O] = 0b0000000000;
     boardstate[COLOR_BOTH] = 0b000000000;
+    whoHasWon = COLOR_NONE;
 }
 
 void Miniboard::setSquare(Square square, Color color) {
     boardstate[color] = boardstate[color] | singleSquaresMasks[square];
     boardstate[COLOR_BOTH] |= singleSquaresMasks[square];
+    if (whoHasWon == COLOR_NONE) {
+        bool win1 = wonBoard[boardstate[COLOR_X] ^ boardstate[COLOR_BOTH]];
+        bool win2 = wonBoard[boardstate[COLOR_O] ^ boardstate[COLOR_BOTH]];
+        if((win1 && win2)) {
+            whoHasWon = COLOR_BOTH;
+        } else if (win1) {
+            whoHasWon = COLOR_O;
+        } else if (win2) {
+            whoHasWon = COLOR_X;
+        }
+    }
 }
 
 void Miniboard::unsetSquare(int square, Color color) {
@@ -21,8 +33,12 @@ void Miniboard::unsetSquare(int square, Color color) {
     boardstate[COLOR_BOTH] &= singleSquaresMasksNegativ[square];
 }
 
+void Miniboard::unsetWon() {
+    whoHasWon = COLOR_NONE;
+}
+
 int Miniboard::getScore() {
-    switch (whoWon()) {
+    switch (whoHasWon) {
         case COLOR_X:
             return BOARDSCORE;
         case COLOR_O:
@@ -44,14 +60,7 @@ bool Miniboard::isSet(int square, Color color) {
 }
 
 bool Miniboard::isWon() {
-    for (MiniBitboard mask : winMasks) {
-        // Sieht auch Wins mit unentschiedenen boards
-        if (((boardstate[COLOR_X] ^ boardstate[COLOR_BOTH]) & mask) == mask)
-            return true;
-        else if (((boardstate[COLOR_O] ^ boardstate[COLOR_BOTH]) & mask) == mask)
-            return true;
-    }
-    return false;
+    return whoHasWon != COLOR_NONE;
 }
 
 bool Miniboard::isFull() {
@@ -59,18 +68,7 @@ bool Miniboard::isFull() {
 }
 
 Color Miniboard::whoWon() {
-    for (MiniBitboard mask : winMasks) {
-        bool win1 = ((boardstate[COLOR_X] ^ boardstate[COLOR_BOTH]) & mask) == mask;
-        bool win2 = ((boardstate[COLOR_O] ^ boardstate[COLOR_BOTH]) & mask) == mask;
-        if((win1 && win2)) {
-            return COLOR_BOTH;
-        } else if (win1) {
-            return COLOR_O;
-        } else if (win2) {
-            return COLOR_X;
-        }
-    }
-    return COLOR_NONE;
+    return whoHasWon;
 }
 
 std::string Miniboard::printMiniboard() {

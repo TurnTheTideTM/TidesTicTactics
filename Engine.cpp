@@ -118,7 +118,7 @@ int Engine::alphaBeta(int alpha, int beta, int depth, Board* board, SEARCHINFO* 
     int score = -INFINITY;
     Coordinate pvMove = NOMOVE;
 
-    if(board->transpositiontable->probeEntry(board, &pvMove, &score, alpha, beta, depth)) {
+   if(board->transpositiontable->probeEntry(board, &pvMove, &score, alpha, beta, depth)) {
         board->transpositiontable->cuts++;
         return score;
     }

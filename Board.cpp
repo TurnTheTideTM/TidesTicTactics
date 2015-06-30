@@ -85,6 +85,8 @@ void Board::undo() {
     // reset big board if necessary
     if (move & 0x10000) {
         bigBoard.unsetSquare(squareBig, toMove);
+        smallBoards[squareBig].unsetWon();
+        bigBoard.unsetWon();
     }
     winner = COLOR_NONE;
 

@@ -11,6 +11,7 @@
 
 class Miniboard {
 public:
+    Color whoHasWon;
     MiniBitboard boardstate [COLOR_NUMBER + 1];    // X O and BOTH
     Miniboard();
     void setSquare(Square, Color);
@@ -22,6 +23,8 @@ public:
     bool isFull();
     Color whoWon();
     std::string printMiniboard();
+
+    void unsetWon();
 };
 
 
