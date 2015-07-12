@@ -5,6 +5,7 @@
 #include "IO.h"
 #include "string.h"
 #include "Engine.h"
+#include <algorithm>
 
 void IO::demo1(Board* board, int depth) {
     struct coordpair {
@@ -12,35 +13,41 @@ void IO::demo1(Board* board, int depth) {
         Square moveSmall;
     };
     coordpair game [81] = {
-            coordpair {SQUARE_0, SQUARE_6},
-            coordpair {SQUARE_0, SQUARE_3},
-            coordpair {SQUARE_0, SQUARE_8},
-            coordpair {SQUARE_0, SQUARE_5},
             coordpair {SQUARE_3, SQUARE_0},
-            coordpair {SQUARE_2, SQUARE_2},
-            coordpair {SQUARE_3, SQUARE_2},
-            coordpair {SQUARE_2, SQUARE_6},
-            coordpair {SQUARE_4, SQUARE_3},
-            coordpair {SQUARE_3, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_5},
-            coordpair {SQUARE_4, SQUARE_0},
-            coordpair {SQUARE_5, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_8},
-            coordpair {SQUARE_5, SQUARE_5},
-            coordpair {SQUARE_5, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_8},
-            coordpair {SQUARE_8, SQUARE_0},
-            coordpair {SQUARE_0, SQUARE_4},
-            coordpair {SQUARE_4, SQUARE_7},
-            coordpair {SQUARE_7, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_6},
-            coordpair {SQUARE_6, SQUARE_3},
+            coordpair {SQUARE_0, SQUARE_1},
             coordpair {SQUARE_3, SQUARE_1},
-            coordpair {SQUARE_1, SQUARE_6},
-
+            coordpair {SQUARE_0, SQUARE_7},
+            coordpair {SQUARE_4, SQUARE_2},
+            coordpair {SQUARE_1, SQUARE_4},
+            coordpair {SQUARE_4, SQUARE_6},
+            coordpair {SQUARE_2, SQUARE_2},
+            coordpair {SQUARE_6, SQUARE_7},
+            coordpair {SQUARE_2, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_8},
+            coordpair {SQUARE_4, SQUARE_0},
+            coordpair {SQUARE_7, SQUARE_3},
+            coordpair {SQUARE_4, SQUARE_8},
+            coordpair {SQUARE_7, SQUARE_4},
+            coordpair {SQUARE_6, SQUARE_3},
+            coordpair {SQUARE_8, SQUARE_5},
+            coordpair {SQUARE_6, SQUARE_5},
+            coordpair {SQUARE_8, SQUARE_2},
+            coordpair {SQUARE_2, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_2},
+            coordpair {SQUARE_2, SQUARE_8},
+            coordpair {SQUARE_8, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_2},
+            coordpair {SQUARE_2, SQUARE_1},
+            coordpair {SQUARE_1, SQUARE_7},
+            coordpair {SQUARE_7, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_0},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
@@ -59,15 +66,25 @@ void IO::demo2(Board* board, int depth) {
     };
     // coordpair {SQUARE_0, SQUARE_0},
     coordpair game [81] = {
+            coordpair {SQUARE_0, SQUARE_2},
             coordpair {SQUARE_0, SQUARE_5},
-            coordpair {SQUARE_0, SQUARE_8},
+            coordpair {SQUARE_0, SQUARE_0},
             coordpair {SQUARE_1, SQUARE_3},
-            coordpair {SQUARE_3, SQUARE_4},
-            coordpair {SQUARE_3, SQUARE_7},
-            coordpair {SQUARE_4, SQUARE_0},
-            coordpair {SQUARE_4, SQUARE_1},
-            coordpair {SQUARE_6, SQUARE_2},
+            coordpair {SQUARE_1, SQUARE_4},
+            coordpair {SQUARE_2, SQUARE_0},
+            coordpair {SQUARE_2, SQUARE_3},
+            coordpair {SQUARE_3, SQUARE_1},
+            coordpair {SQUARE_4, SQUARE_5},
+            coordpair {SQUARE_4, SQUARE_2},
             coordpair {SQUARE_6, SQUARE_6},
+            coordpair {SQUARE_5, SQUARE_6},
+            coordpair {SQUARE_6, SQUARE_7},
+            coordpair {SQUARE_6, SQUARE_4},
+            coordpair {SQUARE_7, SQUARE_1},
+            coordpair {SQUARE_7, SQUARE_7},
+            coordpair {SQUARE_8, SQUARE_8},
+            coordpair {SQUARE_8, SQUARE_8},
+            coordpair {SQUARE_0, SQUARE_4},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
@@ -87,10 +104,12 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
     int depth = 81;
     int movetime = 500; // 3 sec
     Coordinate move;
-    char inBuf[80], command[80];
+    char inBuf[80], command[80], modifier[80];
     Color engineSide = COLOR_NONE;
     Engine engine;
     Movelist movecheck;
+    bool init = false;
+    bool initX = true;
 
     while (true) {
         fflush(stdout);
@@ -109,6 +128,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
         fflush(stdout);
         if(!fgets(inBuf, 80, stdin))
             continue;
+        std::transform(inBuf, inBuf + 80 - 1, inBuf, [](unsigned char c) { return std::tolower(c); });
         sscanf(inBuf, "%s", command);
 
         if(!strcmp(command, "help")) {
@@ -144,10 +164,38 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             continue;
         }
 
+        if(!strcmp(command, "player")) {
+            sscanf(inBuf, "player %s init", modifier);
+            if(!strcmp(modifier, "one")) {
+                init = true;
+                initX = true;
+            } else if(!strcmp(modifier, "two")) {
+                init = true;
+                initX = false;
+            } else {
+                printf("unknown player: %s\n", modifier);
+            }
+            continue;
+        }
+
+        if(!strcmp(command, "start")) {
+            sscanf(inBuf, "start %s", modifier);
+            if(!strcmp(modifier, "turns")) {
+                init = false;
+                board->toMove = COLOR_X;
+                board->next = SQUARE_NONE;
+            } else if(!strcmp(modifier, "game")) {
+                init = true;
+            } else {
+                printf("unknown start modifier: %s\n", modifier);
+            }
+            continue;
+        }
+
         if(!strcmp(command, "captures")) {
             board->getCaptureMoves(&movecheck);
             if (movecheck.count == 0) {
-                printf("No captures found");
+                printf("no captures found");
             }
             for(int i = 0; i < movecheck.count; i++) {
                 printf("%s ", PRMOVE(movecheck.moves[i].move).c_str());
@@ -158,7 +206,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
 
         if(!strcmp(command, "eval")) {
             printf(board->printBoard().c_str());
-            printf("\nEval:%d",board->getScore());
+            printf("\neval:%d",board->getScore());
             continue;
         }
         if(!strcmp(command, "quit")) {
@@ -256,20 +304,31 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
 
         if(!strcmp(command, "go")) {
             engineSide = board->toMove;
+            info->stopped = false;
             continue;
         }
 
         move = parseMove(inBuf);
         if(move == NOMOVE) {
-            printf("Command unknown:%s\n",inBuf);
+            printf("command unknown:%s\n",inBuf);
             continue;
         }
-        board->move(move);
+        if(init) {
+            if(initX) {
+                board->toMove = COLOR_X;
+                board->setupmove(move);
+            } else {
+                board->toMove = COLOR_O;
+                board->setupmove(move);
+            }
+        } else {
+            board->move(move);
+        }
     }
 }
 
 Coordinate IO::parseMove(char* string) {
-    if (!(string[0] == 'B' && string[2] == 'F')) {
+    if (!(string[0] == 'b' && string[2] == 'f')) {
         return NOMOVE;
     }
     int board_big = string[1] - '1';

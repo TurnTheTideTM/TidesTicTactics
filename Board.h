@@ -41,6 +41,8 @@ public:
     void getMoves(Movelist*);
     void getCaptureMoves(Movelist*);
     std::string printBoard();
+
+    void setupmove(Coordinate i);
 };
 
 

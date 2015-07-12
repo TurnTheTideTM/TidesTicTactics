@@ -137,6 +137,14 @@ void Board::getMoves(Movelist* movelist) {
                 if((x == 4) && (y == 4)) {
                     continue;
                 }
+                bool impossible = false;
+                for (MiniBitboard bitboard : winMasks) {
+                    if (((smallBoards[x].boardstate[toMove] | singleSquaresMasks[y]) & bitboard) == bitboard) {
+                        impossible = true;
+                    }
+                }
+                if (impossible)
+                    continue;
                 movelist->moves[movelist->count].move = (Coordinate) (x<<4 | y);
                 movelist->count++;
             }
@@ -305,4 +313,17 @@ std::string Board::printBoard(){
     result += " Metaboard\n";
     result += bigBoard.printMiniboard();
     return result;
+}
+
+void Board::setupmove(Coordinate m) {
+    Square sq_big = (Square) ((m & 0xF0) >> 4);
+    Square sq_small = (Square) (m & 0xF);
+    if (smallBoards[sq_big].isSet(sq_small, COLOR_BOTH)) {
+        smallBoards[sq_big].unsetSquare(sq_small, COLOR_X);
+        smallBoards[sq_big].unsetSquare(sq_small, COLOR_O);
+        movecount--;
+        key ^= hashkeys[m];
+    } else {
+        move(m);
+    }
 }

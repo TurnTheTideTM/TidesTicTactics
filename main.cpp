@@ -8,6 +8,8 @@ int main() {
     initAll();
     Board board;
 
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     SEARCHINFO info;
     info.quit = false;
     IO io;

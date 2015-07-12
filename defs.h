@@ -75,8 +75,8 @@ typedef struct {				// the info about the latest search
     bool quit;					// ends the search
     bool stopped;				// pauses the search
 
-    float fh;					// fail high
-    float fhf;					// fail high first
+    long fh;					// fail high
+    long fhf;					// fail high first
 
     bool POST_THINKING;			// post the search trees to the console
 
@@ -91,6 +91,9 @@ extern int SIZE_TRANS_MB;
 extern int MAXMOVES;
 extern int INFINITY;
 extern int BOARDSCORE;
+
+extern int InputWaiting();
+extern void ReadInput(SEARCHINFO *info);
 
 
 #endif //TIDESTICTACTICS_DEFS_H

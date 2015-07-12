@@ -8,8 +8,8 @@ void Engine::checkUp(SEARCHINFO* info) {
     if (info->timeset && GetTimeMs() >= info->stoptime) {
         info->stopped = true;
     }
-
-    // TODO Read input
+    // AUSKOMMENTIEREN WENN IN IDE (wg. Buffered stdout)
+    ReadInput(info);
 }
 
 void Engine::pickNextMove(int moveNum, Movelist* movelist) {
@@ -169,13 +169,18 @@ int Engine::alphaBeta(int alpha, int beta, int depth, Board* board, SEARCHINFO* 
                         info->fhf++;
                     }
                     info->fh++;
+                    //printf("        Cut Move: %s Beta: %d  Alpha %d Movedepth %d\n",PRMOVE(board->prev << 4 | board->next).c_str(), beta, alpha, board->movecount);
                     board->searchKillers[board->movecount] = movelist.moves[moveNum].move;
                     board->transpositiontable->storeEntry(board, bestMove, beta, HF_BETA, depth);
                     return beta;
+                } else {
+                    //printf("   New Best Move: %s Beta: %d  Alpha %d Movedepth %d\n",PRMOVE(board->prev << 4 | board->next).c_str(), beta, alpha, board->movecount);
                 }
                 foundPv = true;
                 alpha = score;
                 bestMove = movelist.moves[moveNum].move;
+            }else {
+                //printf("Did not cut Move: %s Beta: %d  Alpha %d Movedepth %d\n",PRMOVE(board->prev << 4 | board->next).c_str(), beta, alpha, board->movecount);
             }
         }
     }
@@ -233,7 +238,7 @@ void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
             }
             printf("\n");
         }
-        printf("Hits: %d Overwrite: %d NewWrite: %d Cut: %d\n",board->transpositiontable->hits,board->transpositiontable->overWrite,board->transpositiontable->newWrite,board->transpositiontable->cuts);
+        printf("Hits: %d Overwrite: %d NewWrite: %d Cut: %d FH: %ld FHF %ld\n",board->transpositiontable->hits,board->transpositiontable->overWrite,board->transpositiontable->newWrite,board->transpositiontable->cuts, info->fh, info->fhf);
         if (abs(bestScore) + MAXMOVES > ISMATE) {
             break;
         }
