@@ -29,6 +29,7 @@ public:
     HistoryMove searchKillers[81];
 public:
     Board();
+    ~Board();
     void setzeFeld(Square, Square, Color);
     void move(Square, Square);
     void move(HistoryMove);

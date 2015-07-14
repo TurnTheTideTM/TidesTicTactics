@@ -228,7 +228,7 @@ void Engine::searchPosition(Board* board, SEARCHINFO* info, bool makemove) {
         if(info->stopped) {
             break;
         }
-        pvMoves = board->transpositiontable->getPvLine(currentDepth, board);
+        pvMoves = board->transpositiontable->getPvLine(81, board);
         bestMove = board->pvArray[0];
         printf("score: %d depth: %d nodes: %lld time: %dms ",
                bestScore,currentDepth,info->nodes,GetTimeMs()-info->starttime);

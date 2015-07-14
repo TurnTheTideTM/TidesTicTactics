@@ -26,6 +26,7 @@ public:
     bool probeEntry(Board*, Coordinate *, int*, int, int, int);
     void storeEntry(Board*, Coordinate , int, HashFlag, int);
     Coordinate probePvMove(Board*);
+    ~Transpositiontable();
 };
 
 

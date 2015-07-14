@@ -17,8 +17,7 @@ Transpositiontable::Transpositiontable(int sizeMB) {
     count -= 2;
     count = 1 << ((int) ceil(log2(count)) - 1);
     powerKey = PosKey(count - 1);
-    // if (positionTable != NULL) free(positionTable);
-    positionTable = (HashEntry *) malloc(count * sizeof(HashEntry));
+    positionTable = new HashEntry[count];
     clearTable();
 }
 
@@ -95,8 +94,8 @@ void Transpositiontable::storeEntry(Board *board, Coordinate move, int score, Ha
     } else {
         overWrite++;
     }
-    if (score > ISMATE) score += board->movecount;
-    else if (score < -ISMATE) score -= board->movecount;
+    if (score >= ISMATE) score += board->movecount;
+    else if (score <= -ISMATE) score -= board->movecount;
 
     positionTable[index].move = move;
     positionTable[index].poskey = board->key;
@@ -111,4 +110,10 @@ Coordinate Transpositiontable::probePvMove(Board *board) {
         return positionTable[index].move;
     }
     return NOMOVE;
+}
+
+Transpositiontable::~Transpositiontable() {
+    std::cout << "Freeing memory..." << std::endl;
+    delete[] positionTable;
+    std::cout << "Done..." << std::endl;
 }

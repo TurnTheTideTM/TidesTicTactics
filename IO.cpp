@@ -344,6 +344,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
             }
         }
     }
+    printf("Engine shutting down...\n");
 }
 
 Coordinate IO::parseMove(char* string) {

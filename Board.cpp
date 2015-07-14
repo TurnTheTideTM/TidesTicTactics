@@ -352,3 +352,8 @@ void Board::setupmove(Coordinate m) {
         move(m);
     }
 }
+
+Board::~Board() {
+    std::cout << "Deleting Transpositiontable..." << std::endl;
+    delete transpositiontable;
+}
