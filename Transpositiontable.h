@@ -19,6 +19,7 @@ public:
     int cuts;
     int newWrite;   // saves how often a position got overwritten / newly written
     int overWrite;
+    PosKey powerKey; // count = 2^power
     Transpositiontable(int);
     int getPvLine(int, Board*);
     void clearTable();

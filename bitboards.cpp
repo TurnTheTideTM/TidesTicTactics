@@ -4,15 +4,10 @@
 
 #include "bitboards.h"
 
-#define RAND_64 (	(uint64_t)rand() | \
-					(uint64_t)rand() << 15 | \
-					(uint64_t)rand() << 30 | \
-					(uint64_t)rand() << 45 | \
-					((uint64_t)rand() & 0xf) << 60    )
-
 MiniBitboard singleSquaresMasks[SQUARE_NUMBER];
 MiniBitboard singleSquaresMasksNegativ[SQUARE_NUMBER];
 PosKey hashkeys[2][1<<8];
+PosKey hashkeysMeta[2][9];
 
 MiniBitboard winMasks[] = {
         0b000000111,
@@ -39,8 +34,20 @@ void initBitboards() {
         singleSquaresMasksNegativ[square] = (MiniBitboard) (0b111111111 ^ (1 << square));
     }
     for (int square = 0; square < 1<<8; square++) {
-        hashkeys[0][square] = RAND_64;
-        hashkeys[1][square] = RAND_64;
+        int square_big = (square & 0b11110000) >> 4;
+        int square_small = square & 0b00001111;
+        if (square_big < 9 && square_small < 9) {
+            hashkeys[0][square] = 0;
+            hashkeys[0][square] |= PosKey(1) << (square_big * 9 + square_small);
+            hashkeys[1][square] = 0;
+            hashkeys[1][square] |= PosKey(1) << (square_big * 9 + square_small + 81);
+        }
+    }
+    for (int square = 0; square < 9; square++) {
+        hashkeysMeta[0][square] = 0;
+        hashkeysMeta[0][square] |= PosKey(1) << (162 + square);
+        hashkeysMeta[1][square] = 0;
+        hashkeysMeta[1][square] |= PosKey(1) << (171 + square);
     }
     MiniBitboard result;
     MiniBitboard temp;

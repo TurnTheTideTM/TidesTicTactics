@@ -3,6 +3,7 @@
 //
 #include "Board.h"
 #include <algorithm>
+#include <sstream>
 
 Board::Board() {
     transpositiontable = new Transpositiontable(SIZE_TRANS_MB);
@@ -34,6 +35,7 @@ void Board::move(Square squareBig, Square squareSmall) {
             bigBoard.setSquare(squareBig, toMove);
             winner = bigBoard.whoWon();
             move |= 1 << 16;
+            key ^= hashkeysMeta[toMove][squareBig];
         } else if (smallBoards[squareBig].isFull()) {
             bigBoard.setSquare(squareBig, COLOR_BOTH);
             move |= 1 << 16;
@@ -87,6 +89,7 @@ void Board::undo() {
         bigBoard.unsetSquare(squareBig, toMove);
         smallBoards[squareBig].unsetWon();
         bigBoard.unsetWon();
+        key ^= hashkeys[toMove][squareBig];
     }
     winner = COLOR_NONE;
 
@@ -286,7 +289,11 @@ std::string Board::printBoard(){
     }
     result += "\n";
     result += " Plys: " + std::to_string(movecount) + "\n";
-    result += " PosKey: " + std::to_string(key) + "\n";
+    std::stringstream keystring;
+    for(int i = (int) floor(key.size() / 4); i >= 0; i--) {
+        keystring << std::hex << ((int) (( ( key & (PosKey(0xF) << (i*4)) ) ) >> (i*4)).to_ulong());
+    }
+    result += " PosKey: " + keystring.str() + "\n";
     result += " / - - - + - - - + - - - \\\n";
 
     Square feld_g_alt = SQUARE_NONE;

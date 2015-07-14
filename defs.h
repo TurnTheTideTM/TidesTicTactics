@@ -8,12 +8,13 @@
 #include <stdint-gcc.h>
 #include <stdio.h>
 #include <iostream>
+#include <bitset>
 
 
 typedef uint16_t MiniBitboard;
 typedef uint32_t HistoryMove;
 typedef uint8_t Coordinate;
-typedef uint64_t PosKey;
+typedef std::bitset<180> PosKey;
 
 
 enum Color {

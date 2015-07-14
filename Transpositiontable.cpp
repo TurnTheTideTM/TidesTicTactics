@@ -2,6 +2,7 @@
 // Created by RV Administrator on 17.06.2015.
 //
 
+#include <math.h>
 #include "Transpositiontable.h"
 
 /*
@@ -14,6 +15,8 @@ Transpositiontable::Transpositiontable(int sizeMB) {
     int hashSize = 0x100000 * sizeMB;
     count = (long) (hashSize / sizeof(HashEntry));
     count -= 2;
+    count = 1 << ((int) ceil(log2(count)) - 1);
+    powerKey = PosKey(count - 1);
     // if (positionTable != NULL) free(positionTable);
     positionTable = (HashEntry *) malloc(count * sizeof(HashEntry));
     clearTable();
@@ -52,7 +55,7 @@ void Transpositiontable::clearTable() {
 }
 
 bool Transpositiontable::probeEntry(Board *board, Coordinate *move, int *score, int alpha, int beta, int depth) {
-    long index = (long) (board->key % count);
+    long index = (board->key & powerKey).to_ulong();
     if (positionTable[index].poskey == board->key) {
         *move = positionTable[index].move;
         if (positionTable[index].depth >= depth) {
@@ -86,7 +89,7 @@ bool Transpositiontable::probeEntry(Board *board, Coordinate *move, int *score, 
 }
 
 void Transpositiontable::storeEntry(Board *board, Coordinate move, int score, HashFlag flag, int depth) {
-    long index = (long) (board->key % count);
+    long index = (board->key & powerKey).to_ulong();
     if (positionTable[index].poskey == 0) {
         newWrite++;
     } else {
@@ -103,7 +106,7 @@ void Transpositiontable::storeEntry(Board *board, Coordinate move, int score, Ha
 }
 
 Coordinate Transpositiontable::probePvMove(Board *board) {
-    long index = (long) (board->key % count);
+    long index = (board->key & powerKey).to_ulong();
     if (board->key == positionTable[index].poskey) {
         return positionTable[index].move;
     }
