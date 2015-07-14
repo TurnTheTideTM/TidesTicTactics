@@ -38,16 +38,6 @@ void Miniboard::unsetWon() {
 }
 
 int Miniboard::getScore() {
-    switch (whoHasWon) {
-        case COLOR_X:
-            return BOARDSCORE;
-        case COLOR_O:
-            return -BOARDSCORE;
-        case COLOR_BOTH:
-            return 0;
-        default:
-            break;
-    }
     return ratingTable[boardstate[COLOR_X] << 9 | boardstate[COLOR_O]];
 }
 

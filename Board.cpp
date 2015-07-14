@@ -123,7 +123,7 @@ int Board::getScore() {
     for(int i = 0; i < SQUARE_NUMBER; i++) {
         sum += smallBoards[i].getScore();
     }
-    sum += bigBoard.getScore() * 20;
+    sum += bigBoard.getScore() * 10;
     if (toMove == COLOR_X)
         return sum;
     else
@@ -186,6 +186,18 @@ void Board::getMoves(Movelist* movelist) {
                         movelist->moves[movelist->count].move = (Coordinate) (x << 4 | feld);
                         movelist->count++;
                         feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
+                    }
+                }
+                if(movelist->count == 0) {
+                    for(x = 0; x < 9; x++) {
+                        targets = (smallBoards[x].boardstate[COLOR_BOTH]) ^ full;
+                        feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
+                        while (targets != 0) {
+                            targets ^= singleSquaresMasks[feld];
+                            movelist->moves[movelist->count].move = (Coordinate) (x << 4 | feld);
+                            movelist->count++;
+                            feld = sizeof(unsigned int) * 8 - __builtin_clz(targets) - 1;
+                        }
                     }
                 }
             }

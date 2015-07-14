@@ -1,13 +1,14 @@
 import cPickle
 
-winP1 = 100
-winP2 = -100
-chance_bonus = 15
+winP1 = 0
+winP2 = 0
+chance_bonus = 8
 more_bonus = 0
-mid_bonus = 4
-corner_bonus = 3
-edge_bonus = 2
-minmaxscore = 70
+mid_bonus = 0#12
+corner_bonus = 0#10
+edge_bonus = 0#8
+halfchance_bonus = 4
+minmaxscore = 50
 
 winsMasks = [
     int('000000111', 2),
@@ -66,13 +67,21 @@ def bewerteBoard(setP1, setP2):
     winP1Bool = False
     winP2Bool = False
 
+    halfchances = 0
+    
     for mask in winsMasks:
         if (setP1 & mask) == mask:
             winP1Bool = True
+        if (setP1 & mask):
+            if not setP2 & mask:
+                halfchances += 1
 
     for mask in winsMasks:
         if (setP2 & mask) == mask:
             winP2Bool = True
+        if (setP2 & mask):
+            if not setP1 & mask:
+                halfchances -= 1
 
     if winP1Bool and winP2Bool:
         return 0
@@ -131,6 +140,8 @@ def bewerteBoard(setP1, setP2):
     
     ret += edges * edge_bonus
     ret += corners * corner_bonus
+    
+    ret += halfchances * halfchance_bonus
 
     if p1mid:
         ret += mid_bonus
