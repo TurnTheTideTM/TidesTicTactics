@@ -15,7 +15,5 @@ int main() {
     IO io;
 
     io.consoleLoop(&board, &info);
-
-    delete &board;
     return 0;
 }
