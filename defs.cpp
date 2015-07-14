@@ -14,7 +14,7 @@
 
 Coordinate NOMOVE = 170;
 int ISMATE = 10081;
-int SIZE_TRANS_MB = 250;
+int SIZE_TRANS_MB = 500;
 int MAXMOVES = 81;
 int INFINITY = 25565;
 int BOARDSCORE = 100;

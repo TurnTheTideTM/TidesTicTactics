@@ -15,6 +15,7 @@ typedef uint32_t HistoryMove;
 typedef uint8_t Coordinate;
 typedef uint64_t PosKey;
 
+
 enum Color {
     COLOR_X,
     COLOR_O,

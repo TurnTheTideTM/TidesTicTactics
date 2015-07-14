@@ -14,7 +14,7 @@ extern MiniBitboard captureBoard[1<<9];
 extern int popcountLookup[1<<9];
 extern bool wonBoard[1<<9];
 
-extern PosKey hashkeys[1<<8]; // Key = position
+extern PosKey hashkeys[2][1<<8]; // Key = position
 
 
 extern MiniBitboard full;

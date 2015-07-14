@@ -48,6 +48,8 @@ void IO::demo1(Board* board, int depth) {
             coordpair {SQUARE_7, SQUARE_5},
             coordpair {SQUARE_5, SQUARE_0},
             coordpair {SQUARE_0, SQUARE_0},
+            coordpair {SQUARE_0, SQUARE_5},
+            coordpair {SQUARE_5, SQUARE_5},
 
             coordpair {SQUARE_NONE, SQUARE_NONE}
     };
@@ -110,6 +112,7 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
     Movelist movecheck;
     bool init = false;
     bool initX = true;
+    Movelist movelist;
 
     while (true) {
         fflush(stdout);
@@ -121,8 +124,10 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
                 info->stoptime = info->starttime + movetime;
             }
             engine.searchPosition(board, info, true);
+            engineSide = COLOR_NONE;
         }
-        printf("\nTidesTicTactics > ");
+        // print prompt
+        printf("");
         fflush(stdout);
         memset(&inBuf[0], 0, sizeof(inBuf));
         fflush(stdout);
@@ -322,7 +327,21 @@ void IO::consoleLoop(Board* board, SEARCHINFO* info) {
                 board->setupmove(move);
             }
         } else {
-            board->move(move);
+            board->getMoves(&movelist);
+            bool found = false;
+            for (int i = 0; i < movelist.count; i++) {
+                if (move == movelist.moves[i].move) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+                board->move(move);
+            else {
+                printf("INVALID MOVE: %s\n", PRMOVE(move).c_str());
+                printf("%s", board->printBoard().c_str());
+                break;
+            }
         }
     }
 }

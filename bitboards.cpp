@@ -12,7 +12,7 @@
 
 MiniBitboard singleSquaresMasks[SQUARE_NUMBER];
 MiniBitboard singleSquaresMasksNegativ[SQUARE_NUMBER];
-PosKey hashkeys[1<<8];
+PosKey hashkeys[2][1<<8];
 
 MiniBitboard winMasks[] = {
         0b000000111,
@@ -39,7 +39,8 @@ void initBitboards() {
         singleSquaresMasksNegativ[square] = (MiniBitboard) (0b111111111 ^ (1 << square));
     }
     for (int square = 0; square < 1<<8; square++) {
-        hashkeys[square] = RAND_64;
+        hashkeys[0][square] = RAND_64;
+        hashkeys[1][square] = RAND_64;
     }
     MiniBitboard result;
     MiniBitboard temp;

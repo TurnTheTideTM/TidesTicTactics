@@ -16,7 +16,7 @@ Board::Board() {
 
 void Board::setzeFeld(Square squareBig, Square squareSmall, Color color) {
     smallBoards[squareBig].setSquare(squareSmall, color);
-    key ^= hashkeys[squareBig<<4|squareSmall];
+    key ^= hashkeys[color][squareBig<<4|squareSmall];
 }
 
 void Board::move(HistoryMove m) {
@@ -90,7 +90,7 @@ void Board::undo() {
     }
     winner = COLOR_NONE;
 
-    key ^= hashkeys[squareBig<<4|squareSmall];
+    key ^= hashkeys[toMove][squareBig<<4|squareSmall];
 
     movecount--;
 }
@@ -102,9 +102,15 @@ bool Board::isSet(Square bigSquare, Square smallSquare, Color color) {
 int Board::getScore() {
     switch (winner) {
         case COLOR_X:
-            return ISMATE;
+            if (toMove == COLOR_X)
+                return ISMATE;
+            else
+                return -ISMATE;
         case COLOR_O:
-            return -ISMATE;
+            if (toMove == COLOR_X)
+                return -ISMATE;
+            else
+                return ISMATE;
         case COLOR_BOTH:
             return 0;
         default:
@@ -114,7 +120,7 @@ int Board::getScore() {
     for(int i = 0; i < SQUARE_NUMBER; i++) {
         sum += smallBoards[i].getScore();
     }
-    sum += bigBoard.getScore() * 5;
+    sum += bigBoard.getScore() * 20;
     if (toMove == COLOR_X)
         return sum;
     else
@@ -322,7 +328,7 @@ void Board::setupmove(Coordinate m) {
         smallBoards[sq_big].unsetSquare(sq_small, COLOR_X);
         smallBoards[sq_big].unsetSquare(sq_small, COLOR_O);
         movecount--;
-        key ^= hashkeys[m];
+        key ^= hashkeys[toMove][m];
     } else {
         move(m);
     }
